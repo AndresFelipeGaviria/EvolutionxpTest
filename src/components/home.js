@@ -81,6 +81,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    cursor: 'pointer'
   },
   drawerPaper: {
     position: 'relative',
@@ -150,7 +151,14 @@ export default function Dashboard({children}) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+          <Typography 
+            component="h1" 
+            variant="h6" 
+            color="inherit" 
+            noWrap 
+            className={classes.title}
+            onClick={() => history.push('/dashboard/home')}
+            >
            Tramites
           </Typography>
           <IconButton color="inherit">
@@ -180,8 +188,13 @@ export default function Dashboard({children}) {
           </ListItem>
           <ListItem button key={2}>
             <ListItemIcon> <InboxIcon /> </ListItemIcon>
-            <ListItemText primary={'primero'} />
+            <ListItemText primary='DETALLE-RADICADO' 
+            onClick={() => history.push('/dashboard/radicadoDetalle')}/>
           </ListItem>
+          {/* <ListItem button key={2}>
+            <ListItemIcon> <InboxIcon /> </ListItemIcon>
+            <ListItemText primary={'primero'} />
+          </ListItem> */}
         <Divider />
         {/* <List>{secondaryListItems}</List> */}
       </Drawer>
@@ -190,7 +203,7 @@ export default function Dashboard({children}) {
         <Container maxWidth="lg" className={classes.container}>
           <Box pt={4}>
              {children}
-            <Copyright />
+
           </Box>
         </Container>
       </main>
