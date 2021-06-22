@@ -27,8 +27,6 @@ export const CreatePqr = () => {
       .min(4, "Ingrese mínimo 4 caracteres")
       .max(50, "ingrese máximo 50 caracteres"),
     description: yup.string().required("Este campo es requerido"),
-    // traking: yup.string().required("Este campo es requerido"),
-    // pdf: yup.string().notRequired()
   });
 
   const { register, handleSubmit, control, errors, setValue } = useForm({
@@ -55,7 +53,6 @@ export const CreatePqr = () => {
       creationDate: moment(new Date()).format("L"),
       process: [ ],
     };
-    debugger
     await clientFb.set(
       { process: [{ ...newData, id:IdKey.generate()}] },
       { merge: true });

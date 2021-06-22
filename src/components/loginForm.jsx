@@ -75,6 +75,7 @@ const FormUser = (props) => {
     return Math.floor((Math.random() * (max - min + 1)) + min);
   }
 
+
     const onSubmit = async (data) => {
       const generateCode = random(100, 99999)
       const newData = {...data, createDate: moment(new Date()).format('L'), type: 'PQRS', pin: generateCode }
