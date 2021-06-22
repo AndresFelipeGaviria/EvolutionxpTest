@@ -9,13 +9,9 @@ import {db} from '../../firebase';
 
 
 
-export const CreatePqr = () => {
-
-    // const [files, setFiles] = useState([]);
+export const UpdatePqr = () => {
 
     const schema = yup.object().shape({
-        name: yup.string().required('Este campo es requerido').min(4, 'Ingrese mínimo 4 caracteres').max(50, 'ingrese máximo 50 caracteres'),
-        description: yup.string().required('Este campo es requerido'),
         traking: yup.string().required('Este campo es requerido'),
         // pdf: yup.string().notRequired()
     });
@@ -26,14 +22,14 @@ export const CreatePqr = () => {
         reValidateMode: "onChange",
       });
 
-      const addPqr = async (linkObject) => {
-       const findUser = await db.collection('clients').get();
-        await db.collection('clients').doc().set(linkObject);
+      const addPqr = async (email) => {
+        let result1= await db.collection('clients').where("email", "==", email).get()
+        console.log(result1)
     }
 
       const onSubmit = (data) => {
-          const serializedState = JSON.parse(localStorage.getItem("infoUser"))
-        console.log(serializedState)
+        const serializedState = JSON.parse(localStorage.getItem("infoUser"))
+        addPqr(serializedState.email)
         const newData = { 
             email:serializedState.email, 
             numCel: serializedState.numCel, 
@@ -65,25 +61,6 @@ export const CreatePqr = () => {
             <Typography style ={{ textAlign: 'center', fontSize: 20, margin: 10}}>Crear Pqr</Typography>
             <form onSubmit={handleSubmit(onSubmit)} >
             <Grid container spacing={3}  direction='row'>
-              <Grid item xs={12} md={6} lg={4} style={{display: 'flex'}}>
-              <FormControl fullWidth shrink={true}  notched={true} size="small">
-              <TextField
-                fullWidth
-                inputRef={register}
-                variant="outlined"
-                placeholder = 'Nombre'
-                label = "Nombre"
-                size = "small"
-                InputLabelProps = {{ shrink: true}}
-                defaultValue=''
-                name="name"
-                error={errors.hasOwnProperty('name') && errors['name'].message}                              
-              />
-                <FormHelperText style={{ color: "#f44336", paddingLeft: 14 }}>
-                  {errors.hasOwnProperty('name') && errors['name'].message}
-                </FormHelperText>
-              </FormControl>
-              </Grid>
               {/* <Grid item xs={12} md={6} lg={5} style={{display: 'flex'}}>
               <FormControl fullWidth shrink={true}  notched={true} size="small">
               <TextField 
@@ -100,26 +77,6 @@ export const CreatePqr = () => {
                 </FormHelperText>
               </FormControl>
               </Grid> */}
-              <Grid item xs={12} md={4} lg={5}>
-                <FormControl fullWidth>
-                    <TextField
-                        fullWidth
-                        inputRef={register}
-                        variant="outlined"
-                        label="Descripcion PQR"
-                        multiline
-                        defaultValue=''
-                        rows={4}
-                        rowsMax={4}
-                        name="description"
-                        error={errors.hasOwnProperty('description') && errors['description'].message}                               
-                    />
-                    <FormHelperText style={{ color: "#f44336", paddingLeft: 14 }}>
-                        {errors.hasOwnProperty("description") &&
-                        errors["description"].message}
-                    </FormHelperText>
-                </FormControl>
-                </Grid>
                 <Grid item xs={12} md={4} lg={5}>
                 <FormControl fullWidth>
                     <TextField
@@ -149,4 +106,4 @@ export const CreatePqr = () => {
     )
 }
 
-export default CreatePqr;
+export default UpdatePqr;

@@ -49,22 +49,25 @@ const FormUser = (props) => {
         pin: "",
     };
 
-    const saveJsonLocalStorage = (info) => {
+    const saveJsonLocalStorage = async(info) => {
       const serializedState = JSON.stringify(info);
+      const querySnapshot = await db.collection('clients').get();
       localStorage.setItem('infoUser', serializedState);
     }
       
     const [values, setValues] = useState(initialStateValues);
     const [isCreate, setIsCreate] = useState(false)
 
-    const getClients = async (data) => {
+    const validateClient = async (data) => {
       const arrayClients = [];
-      const querySnapshot = await db.collection('clients').get();
-      querySnapshot.forEach(client => arrayClients.push(client.data()));
-      const result = await arrayClients.filter(doc => doc?.email === data?.email )
-      if(result.length) history.push('/dashboard/home')
-      else return null;
+      debugger
+      let result= await (await db.collection('clients').where("email", "==", data?.email).get()).docs
+
+      // const result = await arrayClients.filter(doc => doc?.email === data?.email )
+      if(result.length && result.length >0 ) history.push('/dashboard/home')
+      else alert('usuario invalido');
   }
+  
   const random =(min, max) => {
     return Math.floor((Math.random() * (max - min + 1)) + min);
   }
@@ -73,7 +76,7 @@ const FormUser = (props) => {
       const generateCode = random(100, 99999)
       const newData = {...data, createDate: moment(new Date()).format('L'), type: 'PQRS', pin: generateCode }
       saveJsonLocalStorage({...data, pin: generateCode});
-      isCreate ? props.addOrEdit(newData) : getClients(newData)
+      isCreate ? props.addOrEdit(newData) : validateClient(newData)
       clearForm();
       console.log({...newData})
     }

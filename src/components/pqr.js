@@ -11,7 +11,6 @@ export const Pqr = () => {
     const getClients = () => {
         db.collection('clients').onSnapshot((querySnapshot)  => {
           const newRadicados = [];
-          debugger;
          querySnapshot.forEach(doc => {
            newRadicados.push({...doc.data(), id:doc.id})
        })
@@ -28,7 +27,7 @@ export const Pqr = () => {
     return (
         <div>
             <Dashboard >
-                <Grid container spacing={3}>
+                {/* <Grid container spacing={3}>
                     <Grid item xs={12} md={4} lg={4}>
                         <Card variant="outlined">
                             <CardContent>
@@ -45,7 +44,7 @@ export const Pqr = () => {
                     <Grid item xs={12} md={8} lg={8}>
                         <Radicado />
                     </Grid>
-                </Grid> 
+                </Grid>  */}
             </Dashboard>
         </div>
        

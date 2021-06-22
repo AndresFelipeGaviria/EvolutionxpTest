@@ -27,6 +27,7 @@ export default function CustomizedTimeline() {
   const classes = useStyles();
 
   return (
+    <div>
     <Timeline align="alternate">
       <TimelineItem>
         <TimelineOppositeContent>
@@ -102,5 +103,6 @@ export default function CustomizedTimeline() {
         </TimelineContent>
       </TimelineItem>
     </Timeline>
+    </div>
   );
 }
