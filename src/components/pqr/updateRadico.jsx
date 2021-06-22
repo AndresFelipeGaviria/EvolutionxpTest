@@ -1,21 +1,17 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import * as yup from "yup";
-import moment, {useState} from "moment";
+import moment from "moment";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Grid, TextField, Card, Button, CardContent, FormControl, FormHelperText, Typography} from "@material-ui/core";
-import Dashboard from '../home';
 import {db} from '../../firebase';
 
 
 
-export const CreatePqr = () => {
-
-    // const [files, setFiles] = useState([]);
+export const UpdateRadicado = () => {
 
     const schema = yup.object().shape({
-        name: yup.string().required('Este campo es requerido').min(4, 'Ingrese mínimo 4 caracteres').max(50, 'ingrese máximo 50 caracteres'),
-        description: yup.string().required('Este campo es requerido'),
+        name: yup.string().required('Este campo es requerido'),
         traking: yup.string().required('Este campo es requerido'),
         // pdf: yup.string().notRequired()
     });
@@ -26,14 +22,15 @@ export const CreatePqr = () => {
         reValidateMode: "onChange",
       });
 
-      const addPqr = async (linkObject) => {
-       const findUser = await db.collection('clients').get();
-        await db.collection('clients').doc().set(linkObject);
+      const getUser = async (email) => {
+          console.log(email)
+        let result1= await db.collection('clients').where("email", "==", email).get()
+        console.log(result1)
     }
 
       const onSubmit = (data) => {
-          const serializedState = JSON.parse(localStorage.getItem("infoUser"))
-        console.log(serializedState)
+        const serializedState = JSON.parse(localStorage.getItem("infoUser"))
+        getUser(serializedState.email)
         const newData = { 
             email:serializedState.email, 
             numCel: serializedState.numCel, 
@@ -43,8 +40,11 @@ export const CreatePqr = () => {
                 traking: data.traking
             }]
         }
-        addPqr(newData);
       }
+
+      useEffect(() => {
+        getUser()
+      },[])
 
     //  const handleCapture = ({ target }) => {
     //     const fileReader = new FileReader();
@@ -61,29 +61,10 @@ export const CreatePqr = () => {
     // console.log(files);
 
     return (
-        <Dashboard>
+        <div>
             <Typography style ={{ textAlign: 'center', fontSize: 20, margin: 10}}>Crear Pqr</Typography>
             <form onSubmit={handleSubmit(onSubmit)} >
             <Grid container spacing={3}  direction='row'>
-            <Grid item xs={12} md={6} lg={4} style={{display: 'flex'}}>
-              <FormControl fullWidth shrink={true}  notched={true} size="small">
-              <TextField
-                fullWidth
-                inputRef={register}
-                variant="outlined"
-                placeholder = 'Nombre'
-                label = "Nombre"
-                size = "small"
-                InputLabelProps = {{ shrink: true}}
-                defaultValue=''
-                name="name"
-                error={errors.hasOwnProperty('name') && errors['name'].message}                              
-              />
-                <FormHelperText style={{ color: "#f44336", paddingLeft: 14 }}>
-                  {errors.hasOwnProperty('name') && errors['name'].message}
-                </FormHelperText>
-              </FormControl>
-              </Grid>
               {/* <Grid item xs={12} md={6} lg={5} style={{display: 'flex'}}>
               <FormControl fullWidth shrink={true}  notched={true} size="small">
               <TextField 
@@ -100,27 +81,7 @@ export const CreatePqr = () => {
                 </FormHelperText>
               </FormControl>
               </Grid> */}
-              <Grid item xs={12} md={4} lg={4}>
-                <FormControl fullWidth>
-                    <TextField
-                        fullWidth
-                        inputRef={register}
-                        variant="outlined"
-                        label="Descripcion PQR"
-                        multiline
-                        defaultValue=''
-                        rows={4}
-                        rowsMax={4}
-                        name="description"
-                        error={errors.hasOwnProperty('description') && errors['description'].message}                               
-                    />
-                    <FormHelperText style={{ color: "#f44336", paddingLeft: 14 }}>
-                        {errors.hasOwnProperty("description") &&
-                        errors["description"].message}
-                    </FormHelperText>
-                </FormControl>
-                </Grid>
-                <Grid item xs={12} md={4} lg={4}>
+                <Grid item xs={12} md={4} lg={5}>
                 <FormControl fullWidth>
                     <TextField
                         fullWidth
@@ -140,15 +101,13 @@ export const CreatePqr = () => {
                     </FormHelperText>
                 </FormControl>
                 </Grid>
-               
+               <Grid item xs={12} sm={12} lg={4}>
+              <Button  type="submit" color='primary' >CREAR</Button>&nbsp;&nbsp;
             </Grid>
-            <Grid item xs={12} sm={12} lg={4} style={{margin: '30px 45%'}}>
-              
-              <Button  type="submit" color='primary' variant='contained' >CREAR</Button>&nbsp;&nbsp;
             </Grid>
           </form>
-        </Dashboard>
+        </div>
     )
 }
 
-export default CreatePqr;
+export default UpdateRadicado;

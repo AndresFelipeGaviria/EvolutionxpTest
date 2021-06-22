@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {Card, CardContent, Typography, Grid} from '@material-ui/core'
-import Dashboard from './home';
+import Dashboard from './home-page';
 import Radicado from './radicado';
 import {db} from '../firebase';
 
@@ -26,7 +26,7 @@ export const Pqr = () => {
    
     return (
         <div>
-            <Dashboard >
+            
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={4} lg={4}>
                         <Card variant="outlined">
@@ -45,7 +45,7 @@ export const Pqr = () => {
                         <Radicado />
                     </Grid>
                 </Grid> 
-            </Dashboard>
+         
         </div>
        
     )

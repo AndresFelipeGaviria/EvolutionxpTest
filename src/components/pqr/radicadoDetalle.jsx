@@ -4,7 +4,6 @@ import moment from "moment";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Grid, TextField, Card, Button, CardContent, FormControl, FormHelperText, Typography} from "@material-ui/core";
-import Dashboard from '../home';
 import {db} from '../../firebase';
 
 
@@ -86,8 +85,7 @@ export const UpdatePqr = () => {
 
     // console.log(files);
 
-    return (
-        <Dashboard>
+    return (        <div>
             <Typography style ={{ textAlign: 'center', fontSize: 20, margin: 10}}>Agregar Proceso</Typography>
             <form onSubmit={handleSubmit(onSubmit)} style={{display: 'flex', flexDirection:'row'}}>
             <Grid container spacing={3}  direction='row'>
@@ -193,7 +191,7 @@ export const UpdatePqr = () => {
             </Grid>
             </Grid>
           </form>
-        </Dashboard>
+        </div>
     )
 }
 

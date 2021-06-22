@@ -17,6 +17,7 @@ import * as yup from "yup";
 import { useHistory } from "react-router-dom";
 import {db} from '../firebase';
 import moment from "moment";
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 
 
@@ -57,15 +58,17 @@ const FormUser = (props) => {
       
     const [values, setValues] = useState(initialStateValues);
     const [isCreate, setIsCreate] = useState(false)
+    const [isAlert, setAlert] = useState(false)
 
     const validateClient = async (data) => {
+      setAlert(false);
       const arrayClients = [];
       debugger
       let result= await (await db.collection('clients').where("email", "==", data?.email).get()).docs
 
       // const result = await arrayClients.filter(doc => doc?.email === data?.email )
       if(result.length && result.length >0 ) history.push('/dashboard/home')
-      else alert('usuario invalido');
+      else setAlert(true);
   }
   
   const random =(min, max) => {
@@ -198,9 +201,11 @@ const FormUser = (props) => {
           </Grid>
         </form>
       </div>
+      {isAlert?<Alert severity="error">Usuario no existe</Alert>:null}
       <Box mt={8}>
         <Copyright />
       </Box>
+
     </Container>
      
 
