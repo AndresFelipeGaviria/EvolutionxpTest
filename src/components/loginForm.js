@@ -16,6 +16,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useHistory } from "react-router-dom";
 import {db} from '../firebase';
+import moment from "moment";
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -69,10 +71,11 @@ const FormUser = (props) => {
 
     const onSubmit = async (data) => {
       const generateCode = random(100, 99999)
+      const newData = {...data, createDate: moment(new Date()).format('L'), type: 'PQRS', pin: generateCode }
       saveJsonLocalStorage({...data, pin: generateCode});
-      isCreate ? props.addOrEdit({...data, pin: generateCode}) : getClients(data)
+      isCreate ? props.addOrEdit(newData) : getClients(newData)
       clearForm();
-      console.log({...data, pin: generateCode})
+      console.log({...newData})
     }
 
     const handleInputChange = (e) => {

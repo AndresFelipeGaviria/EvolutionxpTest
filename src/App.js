@@ -5,6 +5,7 @@ import CreateUser from './components/createUser';
 import Home from './components/home';
 import Radicados from './components/radicado';
 import Pqrs from './components/pqr';
+import CreatePqr from './components/pqr/createPqr';
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 
@@ -39,6 +40,11 @@ function App() {
               exact
               path="/dashboard/pqrs"
               component={Pqrs}
+            />
+            <Route
+              exact
+              path="/dashboard/createPqr"
+              component={CreatePqr}
             />
           </Switch>
       </BrowserRouter>

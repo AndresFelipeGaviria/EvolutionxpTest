@@ -15,6 +15,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useHistory } from "react-router-dom";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -52,9 +53,10 @@ const FormUser = (props) => {
       
     const [values, setValues] = useState(initialStateValues);
     const onSubmit = (data) => {
-        console.log(data)
-        props.addOrEdit(values);
-        saveJsonLocalStorage(data);
+        const newData = {...data, createDate: moment(new Date()).format('L'), type: 'PQRS' }
+        console.log(newData)
+        props.addOrEdit(newData);
+        saveJsonLocalStorage(newData);
         setValues({...initialStateValues})
         history.push('/dashboard/home')
 

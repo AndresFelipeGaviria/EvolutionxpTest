@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -23,6 +23,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
+import { useHistory } from "react-router-dom";
 // import { mainListItems, secondaryListItems } from './listItems';
 // import Chart from './Chart';
 // import Deposits from './Deposits';
@@ -122,16 +123,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Dashboard() {
+export default function Dashboard({children}) {
+    const history = useHistory();
   const classes = useStyles();
+
   const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const handleDrawerClose = () => setOpen(false);
+
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
 
   return (
     <div className={classes.root}>
@@ -172,6 +175,11 @@ export default function Dashboard() {
         <Divider />
         <ListItem button key={1}>
             <ListItemIcon> <InboxIcon /> </ListItemIcon>
+            <ListItemText primary='CREAR PQR' 
+            onClick={() => history.push('/dashboard/createPqr')}/>
+          </ListItem>
+          <ListItem button key={2}>
+            <ListItemIcon> <InboxIcon /> </ListItemIcon>
             <ListItemText primary={'primero'} />
           </ListItem>
         <Divider />
@@ -180,28 +188,8 @@ export default function Dashboard() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
-              {/* <Paper className={fixedHeightPaper}>
-                <Chart />
-              </Paper> */}
-            </Grid>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
-              {/* <Paper className={fixedHeightPaper}>
-                <Deposits />
-              </Paper> */}
-            </Grid>
-            {/* Recent Orders */}
-            <Grid item xs={12}>
-              {/* <Paper className={classes.paper}>
-                <Orders />
-              </Paper> */}
-            </Grid>
-          </Grid>
           <Box pt={4}>
-              <Radicados />
+             {children}
             <Copyright />
           </Box>
         </Container>
