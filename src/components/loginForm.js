@@ -1,78 +1,202 @@
-import React,{useState} from 'react'
+import React, {useState} from 'react';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import {FormControl, Link, Grid } from '@material-ui/core'
+import Box from '@material-ui/core/Box';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useHistory } from "react-router-dom";
+import {db} from '../firebase';
+
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
 
 const FormUser = (props) => {
+  const classes = useStyles();
+  const history = useHistory();
     const initialStateValues = {
         email: "",
         numCel: "",
         pin: "",
     };
+
+    const saveJsonLocalStorage = (info) => {
+      const serializedState = JSON.stringify(info);
+      localStorage.setItem('infoUser', serializedState);
+    }
       
     const [values, setValues] = useState(initialStateValues);
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        props.addOrEdit(values);
-        setValues({...initialStateValues})
+    const [isCreate, setIsCreate] = useState(false)
 
+    const getClients = async (data) => {
+      const arrayClients = [];
+      const querySnapshot = await db.collection('clients').get();
+      querySnapshot.forEach(client => arrayClients.push(client.data()));
+      const result = await arrayClients.filter(doc => doc?.email === data?.email )
+      if(result.length) history.push('/dashboard/home')
+      else return null;
+  }
+  const random =(min, max) => {
+    return Math.floor((Math.random() * (max - min + 1)) + min);
+  }
+
+    const onSubmit = async (data) => {
+      const generateCode = random(100, 99999)
+      saveJsonLocalStorage({...data, pin: generateCode});
+      isCreate ? props.addOrEdit({...data, pin: generateCode}) : getClients(data)
+      clearForm();
+      console.log({...data, pin: generateCode})
     }
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setValues({ ...values, [name]: value });
     };
 
-      
-    return (
-      <div>
-        <h1 style={{textAlign: 'center', margin: 20}}>Bienvenido</h1>
-        <form onSubmit={handleSubmit} className="card card-body border-primary">
-      <div className="form-group input-group">
-        <div className="input-group-text bg-light">
-          <i className="material-icons">account_circle</i>
-        </div>
-        <input
-          type="email"
-          className="form-control"
-          placeholder="ejemplo@hotmail.com"
-          value={values.email}
-          name="email"
-          onChange={handleInputChange}
-        />
-      </div>
-      <br/>
-      <div className="form-group input-group">
-        <div className="input-group-text bg-light">
-          <i className="material-icons">call</i>
-        </div>
-        <input
-          type="numCel"
-          value={values.numCel}
-          name="numCel"
-          placeholder="44412334"
-          className="form-control"
-          onChange={handleInputChange}
-        />
-      </div>
-      <br/>
-      <div className="form-group input-group">
-        <div className="input-group-text bg-light">
-          <i className="material-icons">fingerprint</i>
-        </div>
-        <input
-          type="pin"
-          value={values.pin}
-          name="pin"
-          placeholder="3DKF3334KDSIV"
-          className="form-control"
-          onChange={handleInputChange}
-        />
-      </div>
+    const schema = yup.object().shape({
+      email: yup
+        .string()
+        .nullable()
+        .required("El correo electrónico es obligatorio")
+        .email('Ingresa un email valido'),
+      numCel: yup.string().required("El numero celular es obligatorio"),
+    });
+  
+    const { register, handleSubmit, control, errors, setValue } = useForm({
+      resolver: yupResolver(schema),
+  
+      mode: "onTouched",
+      reValidateMode: "onChange",
+    });
 
-        <br/>
-      <button className="btn btn-primary btn-block">
-          Iniciar Sesión
-        {/* {props.currentId === "" ? "Save" : "Update"} */}
-      </button>
-    </form>
-    </div>
+    const clearForm = () => {
+      setValue('email', '')
+      setValue('numCel', '')
+    }
+
+
+    function Copyright() {
+      return (
+        <Typography variant="body2" color="textSecondary" align="center">
+          {'Copyright © '}
+          <Link color="inherit" href="#">
+            Your Website
+          </Link>{' '}
+          {new Date().getFullYear()}
+          {'.'}
+        </Typography>
+      );
+    }
+
+    // const changeStateForm = (bool) => {
+    //    if (bool)setIsCreate(true)
+    //    else history.push( '/' )
+    // }
+    return (
+      <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          {isCreate ? 'Crear Usuario' : 'Bienvenido'}
+        </Typography>
+        <form onSubmit={handleSubmit(onSubmit)} className={classes.form} >
+          <Grid container spacing={3} alignItems='center' justify="center">
+          <Grid item xs={12} md={12} lg={12}>
+          <FormControl fullWidth>
+                <TextField
+                  fullWidth
+                  type="text"
+                  variant="outlined"
+                  inputRef={register}
+                  label="Correo electronico"
+                  name="email"
+                  InputLabelProps={{ shrink: true }}
+                  error={
+                    !!errors.hasOwnProperty("email") &&
+                    errors["email"].message
+                  }
+                  helperText={
+                    errors.hasOwnProperty("email") &&
+                    errors["email"].message
+                  }
+                />
+              </FormControl>
+          </Grid>
+          <Grid item xs={12} md={12} lg={12} >
+            <FormControl fullWidth>
+              <TextField
+                fullWidth
+                type="number"
+                variant="outlined"
+                inputRef={register}
+                label="Num Celular"
+                name="numCel"
+                InputLabelProps={{ shrink: true }}
+                error={
+                  errors.hasOwnProperty("numCel") &&
+                  errors["numCel"].message
+                }
+                helperText={
+                  errors.hasOwnProperty("numCel") &&
+                  errors["numCel"].message
+                }
+              />
+            </FormControl>
+          </Grid>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+          >
+            {isCreate ? 'CREAR': 'INICIAR SESIÓN'}
+          </Button>
+          <Grid container justify="center" alignItems="center" >
+            <Grid item xs style={{display: "flex", justifyContent: "center", cursor: 'pointer'}}>
+              <Link  variant="body2" onClick={() => setIsCreate(!isCreate)}>
+                {isCreate ? 'Ya tienes cuenta' : 'Crear usuario?'}
+              </Link>
+            </Grid>
+          </Grid>
+          </Grid>
+        </form>
+      </div>
+      <Box mt={8}>
+        <Copyright />
+      </Box>
+    </Container>
+     
 
     )
 }

@@ -8,7 +8,7 @@ const ContainerLogin = () => {
         await db.collection('clients').doc().set(linkObject);
     }
 
-    const getLinks = async () => {
+    const getClients = async () => {
         const querySnapshot = await db.collection('clients').get();
         querySnapshot.forEach(doc => {
             console.log(doc.data())
@@ -17,7 +17,7 @@ const ContainerLogin = () => {
 
     useEffect(() => {
         console.log('getting data...')
-        getLinks()
+        getClients()
     }, [])
     return (
         <>
